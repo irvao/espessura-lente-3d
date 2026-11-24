@@ -1,21 +1,21 @@
-# Comparador de espessuras em 3D: guia para a TI
+# Espessura da lente em 3D
 
-Guia do arquivo `index.html` deste repositório (o mesmo `espessura-lente-3d.html` entregue à TI): o que ele faz, como subir, como a conta funciona e onde mexer para personalizar.
+Comparador de espessura de lentes de óculos em 3D, por índice de refração. Este guia explica o que a página `index.html` faz, como publicar, como a conta funciona e onde mexer para personalizar.
 
 ## 1. Resumo
 
-- **O que é:** uma página que compara duas lentes lado a lado, em 3D, em dois índices de refração. Substitui a tela "Comparar Espessuras" do CDL.
+- **O que é:** uma página que compara duas lentes lado a lado, em 3D, em dois índices de refração.
 - **Formato:** um arquivo HTML único, com CSS e JavaScript dentro. Cerca de 56 KB (20 KB com gzip).
 - **Dependências:** nenhuma biblioteca. O 3D é WebGL puro. A única coisa buscada de fora é a fonte Geist, no Google Fonts.
 - **Dados:** nada é salvo nem enviado. A receita digitada fica só na memória da página e some ao recarregar.
 - **Dois modos:**
-  - **Modo simples:** grau genérico em um controle deslizante, usando os percentuais do catálogo ("40% mais fina").
+  - **Modo simples:** grau genérico em um controle deslizante, usando um percentual de referência por índice ("40% mais fina").
   - **Medida personalizada:** receita e armação do cliente, com espessura em cinco pontos, peso e diâmetro da lente bruta.
 
 ## 2. Como subir
 
-1. Hospedar o arquivo como página estática (por exemplo, na pasta pública do Gestor).
-2. Abrir dentro do CDL por `iframe`, ou por link ou botão.
+1. Abrir o `index.html` direto no navegador, ou hospedar como página estática em qualquer servidor.
+2. Para usar dentro de outro site, embutir por `iframe`, ou abrir por link ou botão.
 3. Dar ao `iframe` uma altura de pelo menos 540 px. A página ocupa 100% da altura que receber.
 
 Pontos de atenção:
@@ -56,7 +56,7 @@ Como calcula:
 2. A maior espessura da lente padrão sai de `tmax150`: borda na miopia, centro na hipermetropia.
 3. Para os outros índices, aplica o percentual da lista `IDX` (campo `pct`) sobre essa espessura.
 
-Ou seja, **no modo simples o "quanto mais fina" vem do catálogo**, não da física. Para mudar um percentual, basta editar `IDX`.
+Ou seja, **no modo simples o "quanto mais fina" vem de uma tabela de referência**, não da física. Para mudar um percentual, basta editar `IDX`.
 
 A vista "No aro" recorta a lente em um aro genérico de 48 × 35 mm (função `Rf`, largura em `AW = 24`).
 
@@ -113,7 +113,7 @@ Todas ficam juntas, no começo do bloco "medida personalizada".
 
 | Variável | O que é | Valores atuais |
 |---|---|---|
-| `IDX` | Índices, nome do material e percentual do catálogo (modo simples) | 1.50, 1.53, 1.59, 1.60, 1.67, 1.74 |
+| `IDX` | Índices, nome do material e percentual de referência (modo simples) | 1.50, 1.53, 1.59, 1.60, 1.67, 1.74 |
 | `CMIN` | Espessura mínima no centro, em mm | 2,0 / 1,8 / 1,5 / 1,5 / 1,3 / 1,2 |
 | `DENS` | Densidade do material, em g/cm³ | 1,32 / 1,11 / 1,20 / 1,30 / 1,36 / 1,47 |
 | `EMIN` | Borda mínima por tipo de aro, em mm | fechado 1,0 / nylon 1,8 / três peças 2,0 |
@@ -134,7 +134,7 @@ Editar a linha `IDX`:
 var IDX=[{n:1.50,mat:'CR-39',pct:0},{n:1.53,mat:'CR-39',pct:10}, ...];
 ```
 
-`n` é o índice, `mat` é o texto abaixo do número e `pct` é o "% mais fina" do modo simples. O catálogo atual chama o 1.53 de "CR-39". O usual para 1.53 é Trivex, e a densidade em `DENS` já é a do Trivex.
+`n` é o índice, `mat` é o texto abaixo do número e `pct` é o "% mais fina" do modo simples. O 1.53 está rotulado como "CR-39". O usual para 1.53 é Trivex, e a densidade em `DENS` já é a do Trivex.
 
 ### Mudar os índices que abrem selecionados
 
@@ -176,7 +176,7 @@ As cores ficam na regra `.sim` do CSS.
 - **Contato.** Tocar no nome, no rodapé, abre um cartão pequeno com e-mail e telefone (`id="contact"`). Os mesmos dados aparecem no fim da janela de explicação. Para trocar, editar os dois lugares, incluindo os endereços `mailto:` e `tel:`.
 - **Link "Como a conta é feita".** É o botão `id="info"`, no mesmo rodapé. Abre a janela `id="help"`.
 - **Texto da explicação.** Fica direto no HTML, dentro de `id="help"`: o aviso amarelo (`class="warn"`), as fórmulas (`class="fx"`) e a lista do que a conta não considera.
-- **Valores da explicação.** A tabela de materiais, as bordas mínimas, o corredor, o limite do prisma e os percentuais do catálogo são preenchidos pela função `openHelp` a partir de `IDX`, `CMIN`, `DENS`, `EMIN`, `CORR` e `PRISMA`. Quem mudar essas tabelas não precisa mexer no texto.
+- **Valores da explicação.** A tabela de materiais, as bordas mínimas, o corredor, o limite do prisma e os percentuais de referência são preenchidos pela função `openHelp` a partir de `IDX`, `CMIN`, `DENS`, `EMIN`, `CORR` e `PRISMA`. Quem mudar essas tabelas não precisa mexer no texto.
 - **Atenção:** as fórmulas escritas na explicação são texto fixo. Se a conta em `custom` for alterada, o texto precisa ser revisado à mão.
 
 ### Mudar outros textos
@@ -191,9 +191,9 @@ As cores ficam na regra `.sim` do CSS.
 - Vidro da lente: constantes `GLASS0`, `GLASS1`, `EDGE0`, `EDGE1` e `CAP`, antes da função `render`. São cores em RGB de 0 a 1.
 - Mapa de espessura: as três cores (verde, amarelo, vermelho) estão no shader, na linha que começa com `vec3 hc=`, e repetidas no CSS em `.rampbar` e `.btn.heat .sw`.
 
-### Abrir já com a receita do cliente (integração com o Gestor)
+### Abrir já com uma receita preenchida (integração com outro sistema)
 
-Hoje a página não lê parâmetros. Se o Gestor for gerar a página já com os dados do pedido, dá para preencher `CU` e ligar o modo personalizado logo antes da última linha do script (`ui();`):
+Hoje a página não lê parâmetros. Se outro sistema for gerar a página já com os dados do pedido, dá para preencher `CU` e ligar o modo personalizado logo antes da última linha do script (`ui();`):
 
 ```js
 CU.eye='oe';CU.multi=true;
@@ -218,7 +218,7 @@ Esse trecho foi testado. Ele **não passa pela validação** do formulário, ent
 3. **Formato do aro é aproximado.** São 9 desenhos genéricos, não o traçado real da armação.
 4. **Multifocal simplificado.** Ver a seção 5.3.
 5. **Sem tratamentos.** Antirreflexo e outras camadas não entram na espessura.
-6. **Teste em aparelho.** A página foi testada em navegador de teste, em tamanho de tablet e de celular. Falta testar o toque em um tablet de loja.
+6. **Teste em aparelho.** A página foi testada em navegador de teste, em tamanho de tablet e de celular. Falta testar o toque em um tablet de verdade.
 
 ## 10. Conferência rápida depois de mexer
 
@@ -230,3 +230,7 @@ Esse trecho foi testado. Ele **não passa pela validação** do formulário, ent
 6. "Modo simples" volta à tela inicial.
 
 Se os números dos itens 2 a 4 mudarem sem que as tabelas tenham sido alteradas, alguma coisa na conta foi afetada.
+
+## Autor
+
+Feito por Irving Arruda.

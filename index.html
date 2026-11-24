@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Espessura da lente em 3D</title>
 <style>
-/* Plano: mesma tela do comparador de espessuras do Gestor Diniz (fundo cinza claro, barra branca no topo, VS no meio),
+/* Plano: fundo cinza claro, barra branca no topo com os dois índices e VS no meio,
    com as lentes em 3D cortadas ao meio. Sem biblioteca externa: WebGL puro, desenha só quando algo muda. Tema único. */
 :root{
   --stage:#efefef;
@@ -310,7 +310,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
       <p>O volume é a soma da espessura em toda a área da lente, já recortada no formato do aro.</p>
 
       <h3>Modo simples</h3>
-      <p>Sem medida personalizada, a tela usa uma lente redonda de 50 mm com o grau do controle. A espessura do 1.50 sai das contas acima, com centro de 2,0 mm nas negativas e borda de 1,0 a 2,0 mm nas positivas. Para os outros índices, aplica o percentual do catálogo: <span id="h-pct"></span>.</p>
+      <p>Sem medida personalizada, a tela usa uma lente redonda de 50 mm com o grau do controle. A espessura do 1.50 sai das contas acima, com centro de 2,0 mm nas negativas e borda de 1,0 a 2,0 mm nas positivas. Para os outros índices, aplica um percentual de referência: <span id="h-pct"></span>.</p>
 
       <h3>O que a conta não considera</h3>
       <ul>
@@ -331,10 +331,10 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 'use strict';
 var $=function(s){return document.querySelector(s)};
 var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* fonte do Gestor, carregada sem travar a abertura da página */
+/* fonte Geist, carregada sem travar a abertura da página */
 var fl=document.createElement('link');fl.rel='stylesheet';fl.href='https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap';document.head.appendChild(fl);
 
-/* índices, materiais e percentuais iguais aos do comparador atual do catálogo */
+/* índices, materiais e percentual de referência de cada um (o "quanto mais fina" do modo simples) */
 var IDX=[{n:1.50,mat:'CR-39',pct:0},{n:1.53,mat:'CR-39',pct:10},{n:1.59,mat:'Policarbonato',pct:15},{n:1.60,mat:'Resina',pct:20},{n:1.67,mat:'Resina',pct:35},{n:1.74,mat:'Resina',pct:40}];
 var HR=25,PI=Math.PI;
 var S={a:0,b:5,hyper:false,grau:4,view:'cut',heat:false,meas:false,az:-.55,el:.14};
@@ -363,7 +363,7 @@ function lens(F,n,f){
    Cálculo pela geometria da lente: frente esférica (curva base), costas tóricas (o cilindro muda a curva em cada direção),
    recorte no formato do aro com o centro óptico deslocado pela DNP e pela altura.
    Multifocal: a adição entra como grau extra que cresce para baixo ao longo do corredor, com prisma de equilíbrio.
-   Valores típicos de laboratório, na mesma ordem da lista IDX. Ajuste aqui se o laboratório de vocês usar outros. */
+   Valores típicos de laboratório, na mesma ordem da lista IDX. Ajuste aqui se o seu laboratório usar outros. */
 var CMIN=[2.0,1.8,1.5,1.5,1.3,1.2];         /* espessura mínima no centro (mm) */
 var DENS=[1.32,1.11,1.20,1.30,1.36,1.47];   /* densidade do material (g/cm³) */
 var EMIN={fechado:1.0,nylon:1.8,tres:2.0};  /* espessura mínima da borda (mm) por tipo de aro */
